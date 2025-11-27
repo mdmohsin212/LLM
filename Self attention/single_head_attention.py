@@ -34,7 +34,7 @@ class SingleHeadSelfAttention(nn.Module):
 if __name__ == "__main__":
     batch_size = 1
     seq_len = 3
-    embed_size = 5
+    embed_size = 4
 
     x = torch.rand((batch_size, seq_len, embed_size))
 
