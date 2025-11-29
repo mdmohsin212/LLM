@@ -8,13 +8,13 @@ from pathlib import Path
 import json
 
 VOCAB_SIZE=8000
-BLOCK_SIZE = 512
+BLOCK_SIZE = 128
 BATCH_SIZE = 16
-EMBED_SIZE = 128
-HEADS = 8
-LAYERS = 8
+EMBED_SIZE = 256
+HEADS = 4
+LAYERS = 4
 LEARNING_RATE = 3e-4
-MAX_ITERS = 3000
+MAX_ITERS = 10000
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 def get_state(ids):
@@ -213,13 +213,11 @@ class TransformerLM(nn.Module):
         pos_emb = self.position_embedding(torch.arange(T, device=idx.device))
         x = tok_emb + pos_emb
         
-        # Create Causal Mask (Lower Triangular)
         mask = torch.tril(torch.ones((T, T), device=idx.device)).expand(
             B, 1, T, T
         )
         
         for block in self.blocks:
-            # Self Attention: value=x, key=x, query=x
             x = block(x, x, x, mask)
             
         x = self.ln_f(x)
@@ -244,7 +242,7 @@ class TransformerLM(nn.Module):
         return idx
 
 model = TransformerLM(VOCAB_SIZE, EMBED_SIZE, LAYERS, HEADS).to(DEVICE)
-optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
+optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.1)
 
 for step in range(MAX_ITERS):
     xb, yb = get_batch()
