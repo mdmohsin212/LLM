@@ -54,7 +54,7 @@ def train_bpe(text, vocab_size):
 
 def encode(text, merges):
     ids = list(text.encode("utf-8"))
-    while True:
+    while len(text) >= 2:
         stats = get_state(ids)
         pair = min(stats, key=lambda p:merges.get(p, float("inf")))
         if pair not in merges:
@@ -231,11 +231,19 @@ class TransformerLM(nn.Module):
             loss = F.cross_entropy(logits, targets)
         return logits, loss
 
-    def generate(self, idx, max_new_tokens):
+    @torch.no_grad()
+    def generate(self, idx, max_new_tokens, temperature=1.0, top_k=None):
         for _ in range(max_new_tokens):
-            idx_cond = idx[:, -BLOCK_SIZE:]
+            idx_cond = idx if idx.size(1) <= BLOCK_SIZE else idx[:, -BLOCK_SIZE:]
+            
             logits, _ = self(idx_cond)
             logits = logits[:, -1, :]
+            logits = logits / temperature
+            
+            if top_k is not None:
+                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+                logits[logits < v[:, [-1]]] = -float('Inf')
+            
             probs = F.softmax(logits, dim=-1)
             idx_next = torch.multinomial(probs, num_samples=1)
             idx = torch.cat((idx, idx_next), dim=1)
