@@ -4,10 +4,12 @@ import torch.nn.functional as F
 class Sampler:    
     @staticmethod
     def apply_temperature(logits, temperature):
+        # Scale logits to control randomness
         return logits / temperature
 
     @staticmethod
     def apply_top_k(logits, k):
+        # Keep only top-k logits; mask others as -inf
         if k is None or k == 0:
             return logits
             
@@ -19,20 +21,20 @@ class Sampler:
 
     @staticmethod
     def apply_top_p(logits, p):
+        # Nucleus sampling: keep smallest set with cumulative prob ≤ p
         if p is None or p >= 1.0:
             return logits
-
+            
         sorted_logits, sorted_indices = torch.sort(logits, descending=True, dim=-1)
-        
         sorted_probs = F.softmax(sorted_logits, dim=-1)
-        
         cumulative_probs = torch.cumsum(sorted_probs, dim=-1)
         
         sorted_indices_to_remove = cumulative_probs > p
-
+        
+        # Shift mask so the first token crossing threshold stays
         sorted_indices_to_remove[..., 1:] = sorted_indices_to_remove[..., :-1].clone()
         sorted_indices_to_remove[..., 0] = 0
-
+        
         indices_to_remove = sorted_indices_to_remove.scatter(1, sorted_indices, sorted_indices_to_remove)
         logits[indices_to_remove] = float('-inf')
         
@@ -40,7 +42,9 @@ class Sampler:
 
     @staticmethod
     def get_next_token(logits, temperature=1.0, top_k=None, top_p=None):
+        # Use logits of last step
         logits = logits[:, -1, :] 
+        
         logits = Sampler.apply_temperature(logits, temperature)
         
         if top_k is not None:
@@ -51,6 +55,7 @@ class Sampler:
             
         probs = F.softmax(logits, dim=-1)
         
+        # Greedy when temp=0, otherwise sample
         if temperature == 0:
             next_token = torch.argmax(logits, dim=-1, keepdim=True)
         else:
@@ -59,18 +64,22 @@ class Sampler:
         return next_token
 
     def beam_search_decoder(logits_function, start_token, beam_width=3, max_steps=5):
+        # Start with one sequence
         sequences = [[([start_token], 0.0)]]
         
         for _ in range(max_steps):
             all_candidates = []
             
             for seq, score in sequences:
+                # Dummy probability generation (placeholder for model)
                 next_probs = torch.softmax(torch.randn(10), dim=-1)
                 
+                # Evaluate all tokens
                 for i in range(len(next_probs)):
                     candidate = (seq + [i], score - torch.log(next_probs[i]).item())
                     all_candidates.append(candidate)
             
+            # Keep best beam_width sequences
             ordered = sorted(all_candidates, key=lambda tup: tup[1])
             sequences = ordered[:beam_width]
             
