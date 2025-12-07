@@ -1,6 +1,4 @@
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 import math
 import torch.optim as optim
 
@@ -32,7 +30,6 @@ class Lion(optim.Optimizer):
 
     @torch.no_grad()
     def step(self, closure=None):
-        # Optional closure support
         loss = None
         if closure is not None:
             with torch.enable_grad():
