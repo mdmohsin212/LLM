@@ -16,7 +16,7 @@ CONFIG = {
 }
 
 # ================================
-# 2. Lion Optimizer (From Scratch)
+# 2. Lion Optimizer
 # ================================
 class Lion(optim.Optimizer):
     def __init__(self, params, lr=1e-4, betas=(0.9, 0.99), weight_decay=0.0):
