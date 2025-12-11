@@ -88,7 +88,7 @@ class Sampler:
 if __name__ == "__main__":
     torch.manual_seed(42)
     
-    dummy_logits = torch.tensor([[1.0, 2.0, 5.0, 0.5, 0.1, 0.1, 0.1, 4.0, 0.2, 0.3]])
+    dummy_logits = torch.tensor([[1.0, 2.0, 5.0, 0.5, 0.1, 0.1, 0.1, 4.0, 0.2, 0.4]])
     
     print("Original Logits:", dummy_logits)
     
