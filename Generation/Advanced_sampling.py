@@ -96,4 +96,4 @@ if __name__ == "__main__":
     
     print("\nTop-k (k=3):", Sampler.apply_top_k(dummy_logits.clone(), k=3))
     
-    print("\nTop-p (p=0.8):", Sampler.apply_top_p(dummy_logits.clone(), p=0.8))
+    print("\nTop-p (p=0.8):", Sampler.apply_top_p(dummy_logits.clone(), p=0.7))
