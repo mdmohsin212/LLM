@@ -7,7 +7,10 @@ import random
 from pathlib import Path
 import json
 
-
+VOCAB_SIZE=8000
+BLOCK_SIZE = 128
+BATCH_SIZE = 16
+EMBED_SIZE = 256
 HEADS = 4
 LAYERS = 4
 LEARNING_RATE = 3e-4
