@@ -10,12 +10,7 @@ class FeedForward(nn.Module):
         self.fc2 = nn.Linear(hidden_dim, embd_size)
         self.dropout = nn.Dropout(dropout)
         
-    def forward(self, x):
-        x = self.fc1(x)
-        x = F.gelu(x)
-        x = self.dropout(x)
-        x = self.fc2(x)
-        return x
+
 
 
 class MultiHeadAttention(nn.Module):
