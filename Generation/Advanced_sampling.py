@@ -65,7 +65,7 @@ class Sampler:
 
     def beam_search_decoder(logits_function, start_token, beam_width=3, max_steps=5):
         # Start with one sequence
-        sequences = [[([start_token], 0.1)]]
+        sequences = [[([start_token], 0.0)]]
         
         for _ in range(max_steps):
             all_candidates = []
