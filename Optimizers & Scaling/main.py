@@ -97,7 +97,7 @@ def get_lr(step, config):
 # model = TransformerLM(...)
 # model.to(DEVICE)
 
-optimizer_type = "AdamW"  # Choose: "AdamW", "Lion", "RMSProp"
+optimizer_type = "Lion"  # Choose: "AdamW", "Lion", "RMSProp"
 
 # Choose optimizer
 if optimizer_type == "Lion":
