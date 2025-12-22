@@ -15,7 +15,7 @@ class MultiHeadAttention(nn.Module):
         # Linear projections for Q, K, V
         self.W_q = nn.Linear(embed_size, embed_size, bias=False)
         self.W_k = nn.Linear(embed_size, embed_size, bias=False)
-        self.W_v = nn.Linear(embed_size, embed_size, bias=False)
+        
 
         # Output projection after concatenating heads
         self.fc_out = nn.Linear(embed_size, embed_size)
