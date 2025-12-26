@@ -44,14 +44,11 @@ class LLMAPI(ls.LitAPI):
                 eos_token_id=self.tokenizer.convert_tokens_to_ids(END_TOKEN),
                 pad_token_id=self.tokenizer.eos_token_id
             )
-        # Return the generated token sequence
         return outputs[0]
 
-    # 3. ENCODE: Decode tokens to string and format response
     def encode_response(self, output):
         generated_text = self.tokenizer.decode(output, skip_special_tokens=True)
         
-        # Post-processing to extract just the assistant's reply
         if ASSISTANT_TOKEN in generated_text:
             generated_code = generated_text.split(ASSISTANT_TOKEN)[1].strip()
             # Clean up trailing end tokens if they exist in the split
