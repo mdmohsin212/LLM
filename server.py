@@ -1,4 +1,4 @@
-import litserve as ls
+seeimport litserve as ls
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
@@ -62,7 +62,6 @@ class LLMAPI(ls.LitAPI):
             
         return {"response": generated_code}
 
-if __name__ == "__main__":
-    # accelerator="auto" will automatically find the GPU
+if __name__ == "__main__":q
     server = ls.LitServer(LLMAPI(), accelerator="auto")
     server.run(port=8000)
