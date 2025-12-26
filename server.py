@@ -2,7 +2,6 @@ seeimport litserve as ls
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
-# Define constants
 SYSTEM_PROMPT = "<|system|>\nYou are a senior Python developer. Provide clear, correct, well-commented code.<|end|>\n\n"
 USER_TOKEN = "<|user|>\n"
 ASSISTANT_TOKEN = "<|assistant|>\n"
@@ -10,12 +9,10 @@ END_TOKEN = "<|end|>"
 
 class LLMAPI(ls.LitAPI):
     def setup(self, device):
-        # Load model and tokenizer
         model_name = "mohsin416/phi3-python-instruct"
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForCausalLM.from_pretrained(model_name)
         
-        # Move model to device (GPU/CPU)
         if device != "cpu":
             self.model.to(device)
         self.model.eval()
